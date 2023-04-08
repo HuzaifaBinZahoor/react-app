@@ -7,9 +7,39 @@ console.log("Cities are", firstCity);
 console.log("Cities are", secondCity);
 console.log("Cities are", thirdCity);
 
+/* For custome hook */
+function useInput(initialValue) {
+  const [value, setValue] = useState(initialValue);
+  return [
+    /* This will return what ever I want */
+    {
+      value,
+      onChange: (e) => setValue(e.target.value),
+    },
+    () =>
+      setValue(
+        initialValue
+      ) /* this will be our cleanup function, we'll set the value to whatever that initile value is */,
+  ];
+}
+
+/* 
+Here is the best way, for me, to add code inside word:
+
+Go to Insert tab, Text section, click Object button (it's on the right)
+Choose OpenDocument Text which will open a new embedded word document
+Copy and paste your code from Visual Studio / Eclipse inside this embedded word page
+Save and close
+
+*/
+
 function App({ firstCity }) {
   const [emotion, setEmotion] = useState("Sad");
   const [checked, setChecked] = useState(false);
+
+  /* specific const for customeHook */
+  const [titleProps, setTitleProps] = useInput("");
+  const [colorProps, setColorProps] = useInput("#000000");
 
   const [titleUseState, setTitleUseState] = useState("");
   const [colorUseState, setColorUseState] = useState("#000000");
@@ -29,6 +59,11 @@ function App({ firstCity }) {
     const input = inputText.current.value;
     const color = colorValue.current.value;
     alert(`${input}, ${color}`);
+  };
+
+  const submitCustomHook = (e) => {
+    e.preventDefault();
+    alert(`${titleProps.value}, ${colorProps.value}`);
   };
 
   const submitAgain = (e) => {
@@ -70,7 +105,13 @@ function App({ firstCity }) {
           onChange={(event) => setColorUseState(event.target.value)}
         ></input>
         <button>submit Again</button>
-        <button>submit Again 2 3 4</button>
+      </form>
+
+      {/* custom hook for below */}
+      <form onSubmit={submitCustomHook}>
+        <input type="text" placeholder="name of color" {...titleProps}></input>
+        <input type="color" {...colorProps}></input>
+        <button>submit Again custom hook</button>
       </form>
     </div>
   );
